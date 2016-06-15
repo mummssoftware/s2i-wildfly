@@ -47,7 +47,7 @@ RUN /wildfly/bin/add-user.sh test-admin ^NtEEzYULRt?dJ7?X3$w83FtrbMk -s && \
     sleep 10 && \
     /wildfly/bin/jboss-cli.sh --connect --user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command="module add --name=org.postgres --resources=/tmp/postgresql-9.4.1208.jre6.jar --dependencies=javax.api,javax.transaction.api" && \
     /wildfly/bin/jboss-cli.sh --connect	--user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command=:shutdown && \
-    rm /tmp/*.sh /tmp/*.jar
+    rm /tmp/postgresql-9.4.1208.jre6.jar
 
 
 RUN chown -R 1001:0 /wildfly  && \
