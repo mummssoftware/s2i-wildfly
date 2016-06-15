@@ -193,22 +193,22 @@ if [ -f "$LOCAL_SOURCE_DIR/pom.xml" ]; then
     exit $ERR
   fi
 
-  echo "Copying built war files into $DEPLOY_DIR for later deployment..."
+  echo "Copying built ear files into $DEPLOY_DIR for later deployment..."
   popd &> /dev/null
 else
   echo "Copying binaries in source directory into $DEPLOY_DIR for later deployment..."
-  cp $LOCAL_SOURCE_DIR/*.war $DEPLOY_DIR >& /dev/null
+  cp $LOCAL_SOURCE_DIR/*.ear $DEPLOY_DIR >& /dev/null
   chgrp -R 0 $DEPLOY_DIR
   chmod -R g+rw $DEPLOY_DIR
 fi
 
 if [ -d $LOCAL_SOURCE_DIR/target ]; then
-  cp $LOCAL_SOURCE_DIR/target/*.war $DEPLOY_DIR >& /dev/null
+  cp $LOCAL_SOURCE_DIR/target/*.ear $DEPLOY_DIR >& /dev/null
   chgrp -R 0 $DEPLOY_DIR
   chmod -R g+rw $DEPLOY_DIR
 fi
 if [ -d $LOCAL_SOURCE_DIR/deployments ]; then
-  cp $LOCAL_SOURCE_DIR/deployments/*.war $DEPLOY_DIR >& /dev/null
+  cp $LOCAL_SOURCE_DIR/deployments/*.ear $DEPLOY_DIR >& /dev/null
   chgrp -R 0 $DEPLOY_DIR
   chmod -R g+rw $DEPLOY_DIR
 fi
@@ -227,6 +227,24 @@ if [ -d $LOCAL_SOURCE_DIR/modules ]; then
   chgrp -R 0 /wildfly/provided_modules
   chmod -R g+rw /wildfly/provided_modules
 fi
+
+####################HBEE related assembly#########################
+restore_saved_artifacts
+echo "creating $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties"
+echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties
+echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
+mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
+
+cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
+ant -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE build;
+mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/
+mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
+cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
+
+echo "cleaning up"
+rm -rf $LOCAL_SOURCE_DIR/*
+####################HBEE related assembly#########################
+
 echo "...done"
 
 # This logic is intended to deploy the app as part of assemble

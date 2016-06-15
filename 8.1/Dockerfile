@@ -5,7 +5,7 @@ FROM openshift/base-centos7
 
 MAINTAINER Ben Parees <bparees@redhat.com>
 
-EXPOSE 8080
+EXPOSE 8080 9990
 
 ENV WILDFLY_VERSION=8.1 \
     WILDFLY_VERSION_BIN=8.1.0.Final \
@@ -30,16 +30,33 @@ RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-
     mkdir -p /opt/s2i/destination
 
 # Add s2i wildfly customizations
-ADD ./contrib/wfmodules/ /wildfly/modules/
-ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
-ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
+#ADD ./contrib/wfmodules/ /wildfly/modules/
+#ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
+#ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
+
+RUN yum update && yum install -y ant && yum install -y maven && yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
+
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
-RUN chown -R 1001:0 /wildfly && chown -R 1001:0 $HOME/.pki && \
+#lets add our postgres driver
+COPY ./postgres/postgresql-9.4.1208.jre6.jar /tmp/
+RUN /wildfly/bin/add-user.sh test-admin ^NtEEzYULRt?dJ7?X3$w83FtrbMk -s && \
+    /bin/sh -c "/wildfly/bin/standalone.sh &" && \
+    sleep 10 && \
+    /wildfly/bin/jboss-cli.sh --connect --user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command="module add --name=org.postgres --resources=/tmp/postgresql-9.4.1208.jre6.jar --dependencies=javax.api,javax.transaction.api" && \
+    /wildfly/bin/jboss-cli.sh --connect	--user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command=:shutdown && \
+    rm /tmp/*.sh /tmp/*.jar
+
+
+RUN chown -R 1001:0 /wildfly  && \
+    chown -R 1001:0 $HOME/.pki && \
     chmod -R ug+rw /wildfly && \
+    mkdir -p /opt/hummingbird/data/ && \
+    chmod -R g+rw /opt/hummingbird/data/ && \
     chmod -R g+rw /opt/s2i/destination
+
 
 USER 1001
 
