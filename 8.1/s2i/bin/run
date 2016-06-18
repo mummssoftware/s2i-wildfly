@@ -2,6 +2,6 @@
 
 #the variables HB_DB_USER and HB_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
 
-exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DHB_DB_USER=$HB_DB_USER -DHB_DB_PASSWORD=$HB_DB_PASSWORD -DHB_ADMIN_DB=$HB_ADMIN_DB -DHB_ROOT_DB=$HB_ROOT_DB -DHB_REF_DB=$HB_REF_DB -Djboss.http.port=80
+exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DHB_DB_USER=$HB_DB_USER -DHB_DB_PASSWORD=$HB_DB_PASSWORD -DHB_ADMIN_DB=$HB_ADMIN_DB -DHB_ROOT_DB=$HB_ROOT_DB -DHB_REF_DB=$HB_REF_DB
 
 
