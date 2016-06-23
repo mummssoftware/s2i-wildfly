@@ -34,7 +34,7 @@ RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-
 #ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
 #ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
 
-RUN yum update && yum install -y ant && yum install -y maven && yum clean all -y
+RUN yum update -y && yum install -y ant && yum install -y maven && yum clean all -y
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 
