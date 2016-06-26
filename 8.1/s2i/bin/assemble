@@ -237,7 +237,7 @@ mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 ant -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE build;
-#mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/
+mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /opt/hummingbird/data/
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
 tar xvf hb-data.tar
