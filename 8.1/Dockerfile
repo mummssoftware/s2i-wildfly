@@ -24,9 +24,14 @@ RUN INSTALL_PKGS="tar unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-
     yum clean all -y && \
     (curl -v https://www.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | \
     tar -zx -C /usr/local) && \
-    ln -sf /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn && \
-    mkdir -p /wildfly && \
-    (curl -v https://download.jboss.org/wildfly/$WILDFLY_VERSION_BIN/wildfly-$WILDFLY_VERSION_BIN.tar.gz | tar -zx --strip-components=1 -C /wildfly) && \
+    ln -sf /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn
+RUN    mkdir -p /wildfly && \
+    wget -O /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz https://download.jboss.org/wildfly/$WILDFLY_VERSION_BIN/wildfly-$WILDFLY_VERSION_BIN.tar.gz 
+RUN     gunzip /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz && \
+    tar -xvf  /tmp/wildfly-$WILDFLY_VERSION_BIN.tar -C /wildfly && \
+    rm /tmp/wildfly-$WILDFLY_VERSION_BIN.tar && \
+    mv /wildfly/wildfly-$WILDFLY_VERSION_BIN/* /wildfly/ && \
+    rm -rf /tmp/wildfly-$WILDFLY_VERSION_BIN && \
     mkdir -p /opt/s2i/destination
 
 # Add s2i wildfly customizations
