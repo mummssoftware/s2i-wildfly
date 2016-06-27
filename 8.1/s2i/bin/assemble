@@ -241,7 +241,7 @@ cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 #mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 #cd /opt/hummingbird/data/
 #tar xvf hb-data.tar
-#cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
+cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
 
 echo "cleaning up"
 #rm -rf $LOCAL_SOURCE_DIR/*
