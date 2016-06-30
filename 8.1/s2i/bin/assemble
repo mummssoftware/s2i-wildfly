@@ -244,7 +244,7 @@ tar xvf hb-data.tar
 cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
 
 echo "cleaning up"
-#rm -rf $LOCAL_SOURCE_DIR/*
+rm -rf $LOCAL_SOURCE_DIR/*
 ####################HBEE related assembly#########################
 
 echo "...done"
