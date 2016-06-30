@@ -238,7 +238,7 @@ mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=hummingbird -Ddatabase.password=$HB_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$HB_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 ant -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE build;
-mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /opt/hummingbird/data/
+mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
 tar xvf hb-data.tar
