@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#the variables HB_DB_USER and HB_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
+#the variables PIM_DB_USER and PIM_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
 
-exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DLDAP_HOST=$LDAP_HOST -DHB_DB_USER=$HB_DB_USER -DHB_DB_PASSWORD=$HB_DB_PASSWORD -DHB_ADMIN_DB=$HB_ADMIN_DB -DHB_ROOT_DB=$HB_ROOT_DB -DHB_REF_DB=$HB_REF_DB
+exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DLDAP_HOST=$LDAP_HOST -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB
 
 
