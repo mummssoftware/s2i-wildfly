@@ -240,7 +240,7 @@ echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_D
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 echo "liquifying ref db"
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$GIT_HOME/hbgwt/HBRefJPA/liquibase/changelog/ref-db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_REF_DB:5432/ liquibase-update-ref-db -Ddatabase.name=hummingbird_reference
-ant -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE run-tests;
+ant -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ -Ddatabase.username=hummingbird -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Duser.timezone=UTC -Dcontexts=test run-tests 
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/ 
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
