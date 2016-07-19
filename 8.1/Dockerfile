@@ -53,7 +53,8 @@ RUN /wildfly/bin/add-user.sh test-admin ^NtEEzYULRt?dJ7?X3$w83FtrbMk -s && \
     /wildfly/bin/jboss-cli.sh --connect	--user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command=:shutdown && \
     rm /tmp/postgresql-9.4.1208.jre6.jar
 
-RUN yum install -y  glibc-devel.i686
+RUN yum install -y  glibc-devel.i686 libncurses-dev.i686 file
+
 
 RUN chown -R 1001:0 /wildfly  && \
     chown -R 1001:0 $HOME/.pki && \
