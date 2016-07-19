@@ -18,7 +18,7 @@ LABEL io.k8s.description="Platform for building and running JEE applications on 
       io.openshift.s2i.destination="/opt/s2i/destination"
 
 # Install Maven, Wildfly 8
-RUN INSTALL_PKGS="tar ant unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-devel" && \
+RUN INSTALL_PKGS="tar ant unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-devel glibc-devel.i686 ncurses-libs.i686 libxml2-devel.i686 file" && \
     yum install -y --enablerepo=centosplus $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all -y && \
@@ -53,7 +53,6 @@ RUN /wildfly/bin/add-user.sh test-admin ^NtEEzYULRt?dJ7?X3$w83FtrbMk -s && \
     /wildfly/bin/jboss-cli.sh --connect	--user=test-admin --password=^NtEEzYULRt?dJ7?X3$w83FtrbMk --command=:shutdown && \
     rm /tmp/postgresql-9.4.1208.jre6.jar
 
-RUN yum install -y  glibc-devel.i686 libncurses-dev.i686 file
 
 
 RUN chown -R 1001:0 /wildfly  && \
@@ -64,6 +63,6 @@ RUN chown -R 1001:0 /wildfly  && \
     chmod -R g+rw /opt/s2i/destination
 
 
-USER 1001
+#USER 1001
 
 CMD $STI_SCRIPTS_PATH/usage
