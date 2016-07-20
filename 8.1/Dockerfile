@@ -63,6 +63,6 @@ RUN chown -R 1001:0 /wildfly  && \
     chmod -R g+rw /opt/s2i/destination
 
 
-#USER 1001
+USER 1001
 
 CMD $STI_SCRIPTS_PATH/usage
