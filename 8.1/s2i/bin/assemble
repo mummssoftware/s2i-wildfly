@@ -235,8 +235,7 @@ echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hb
 echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
 mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
-mv $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources /opt/hummingbird/data/hbgwt/HBEJB/
-#cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
+cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
 
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_DB_PASSWORD "
@@ -249,19 +248,21 @@ ant  -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE   -DHB_UNI
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
 tar xvf hb-data.tar
-rm hb-data.tar
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
 then
    cd $LOCAL_SOURCE_DIR/hbgwt/HBUnitTest/;
+   mv $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources /opt/hummingbird/data/hbgwt/HBEJB/
    ant -DWILDFLY_HOME=/wildfly/ -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD  -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB -DPIM_ADMIN_DB=$PIM_ADMIN_DB -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ -Ddatabase.username=hummingbird -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Duser.timezone=UTC -Dcontexts=test run-tests;
+   rm -rf /opt/hummingbird/data/hbgwt/HBEJB/resources
 fi 
 
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/ 
 
 echo "cleaning up"
 rm -rf $LOCAL_SOURCE_DIR/*
+
 ####################HBEE related assembly#########################
 
 echo "...done"
