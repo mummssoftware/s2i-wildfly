@@ -245,20 +245,20 @@ ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_US
 cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 ant  -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
-
+mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
+cd /opt/hummingbird/data/
+tar xvf hb-data.tar
+rm hb-data.tar
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
 then
    cd $LOCAL_SOURCE_DIR/hbgwt/HBUnitTest/;
-   mv $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources /opt/hummingbird/data/hbgwt/HBEJB/
+   cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources/* /opt/hummingbird/data/hbgwt/HBEJB/resources/
    ant -DWILDFLY_HOME=/wildfly/ -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD  -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB -DPIM_ADMIN_DB=$PIM_ADMIN_DB -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ -Ddatabase.username=hummingbird -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Duser.timezone=UTC -Dcontexts=test run-tests;
    rm -rf /opt/hummingbird/data/hbgwt/HBEJB/resources
 fi 
-mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
-cd /opt/hummingbird/data/
-tar xvf hb-data.tar
-rm hb-data.tar
+
 
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/ 
 
