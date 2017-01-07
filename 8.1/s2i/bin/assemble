@@ -235,7 +235,8 @@ echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hb
 echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
 mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
-cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
+mv $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources /opt/hummingbird/data/hbgwt/HBEJB/
+#cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
 
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_DB_PASSWORD "
@@ -248,6 +249,7 @@ ant  -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE   -DHB_UNI
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
 tar xvf hb-data.tar
+rm hb-data.tar
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
