@@ -162,7 +162,7 @@ DEPLOY_DIR=/wildfly/standalone/deployments
 mkdir -p $DEPLOY_DIR
 
 # Copy the source for compilation
-mv /opt/s2i/destination/src/. $LOCAL_SOURCE_DIR
+mv /opt/s2i/destination/src/* $LOCAL_SOURCE_DIR
 chgrp -R 0 $LOCAL_SOURCE_DIR
 chmod -R g+rw $LOCAL_SOURCE_DIR
 
