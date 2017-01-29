@@ -245,14 +245,15 @@ ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_US
 cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/standalone.xml /wildfly/standalone/configuration/
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 ant  -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
+echo "extracting hb-data.tar"
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
-tar xvf hb-data.tar
+tar xvf hb-data.tar > /dev/null 2> /dev/null
 rm hb-data.tar
+echo "setting up files for running liquibase on startup"
 mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/
 cp $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml /opt/hummingbird/data/hbgwt/HBJPA/
-cp $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.xml /opt/hummingbird/data/hbgwt/lib/ivy/ivysettings.xml
-cp $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties /opt/hummingbird/data/hbgwt/lib/ivy/ivysettings.properties
+cp -Rfcp $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
@@ -268,6 +269,7 @@ mv $LOCAL_SOURCE_DIR/hbgwt/dist/HBEE.ear /wildfly/standalone/deployments/
 
 echo "cleaning up"
 rm -rf $LOCAL_SOURCE_DIR/*
+rm -rf /opt/s2i/destination/src/*
 
 ####################HBEE related assembly#########################
 
