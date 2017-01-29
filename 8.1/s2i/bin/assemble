@@ -251,6 +251,8 @@ tar xvf hb-data.tar
 rm hb-data.tar
 mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/
 cp $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml /opt/hummingbird/data/hbgwt/HBJPA/
+cp $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.xml /opt/hummingbird/data/hbgwt/lib/ivy/ivysettings.xml
+cp $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties /opt/hummingbird/data/hbgwt/lib/ivy/ivysettings.properties
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
