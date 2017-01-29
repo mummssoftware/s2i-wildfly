@@ -162,7 +162,7 @@ DEPLOY_DIR=/wildfly/standalone/deployments
 mkdir -p $DEPLOY_DIR
 
 # Copy the source for compilation
-cp -Rf /opt/s2i/destination/src/. $LOCAL_SOURCE_DIR
+mv /opt/s2i/destination/src/. $LOCAL_SOURCE_DIR
 chgrp -R 0 $LOCAL_SOURCE_DIR
 chmod -R g+rw $LOCAL_SOURCE_DIR
 
@@ -249,6 +249,8 @@ mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
 tar xvf hb-data.tar
 rm hb-data.tar
+mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/
+cp $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml /opt/hummingbird/data/hbgwt/HBJPA/
 
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
