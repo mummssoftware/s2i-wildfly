@@ -235,6 +235,7 @@ echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hb
 echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
 mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
+mkdir -p $LOCAL_SOURCE_DIR/.ant/lib/
 cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
 
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
