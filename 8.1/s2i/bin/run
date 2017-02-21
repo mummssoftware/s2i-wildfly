@@ -3,6 +3,6 @@
 #the variables PIM_DB_USER and PIM_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
 ant -f /opt/hummingbird/data/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=/opt/hummingbird/data/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 
-exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DLDAP_HOST=$LDAP_HOST -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB
+exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 -DLDAP_HOST=$LDAP_HOST -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT
 
 
