@@ -38,7 +38,7 @@ RUN     gunzip /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz && \
 #ADD ./contrib/wfmodules/ /wildfly/modules/
 #ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
 #ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
-COPY customizations/undertow-core-1.0.15.Final.jar /wildfly/modules/system/layers/base/io/undertow/servlet/main/
+COPY customizations/undertow-servlet-1.0.15.Final.jar /wildfly/modules/system/layers/base/io/undertow/servlet/main/
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 
