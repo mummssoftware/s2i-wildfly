@@ -34,6 +34,19 @@ RUN     gunzip /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz && \
     rm -rf /tmp/wildfly-$WILDFLY_VERSION_BIN && \
     mkdir -p /opt/s2i/destination
 
+
+COPY ./elk/elastic-beats.repo /etc/yum.repos.d/elastic-beats.repo
+COPY ./elk/logstash-forwarder.crt /etc/pki/tls/certs/logstash-forwarder.crt
+COPY ./elk/filebeat.yml /etc/filebeat/filebeat.yml
+
+RUN echo "installing filebeat..." && \
+    rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch || { echo 'installing GPG key for elastic search failed' ; exit 1; } && \
+    yum -y install filebeat && \
+    sudo systemctl start filebeat && \
+    sudo systemctl enable filebeat
+
+    
+
 # Add s2i wildfly customizations
 #ADD ./contrib/wfmodules/ /wildfly/modules/
 #ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
