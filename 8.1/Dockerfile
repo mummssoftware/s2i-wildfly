@@ -41,9 +41,7 @@ COPY ./elk/filebeat.yml /etc/filebeat/filebeat.yml
 
 RUN echo "installing filebeat..." && \
     rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch || { echo 'installing GPG key for elastic search failed' ; exit 1; } && \
-    yum -y install filebeat && \
-    systemctl start filebeat && \
-    systemctl enable filebeat
+    yum -y install filebeat 
 
     
 
