@@ -3,7 +3,7 @@
 #we do the variable substitution in standalone.xml for the ref db config here explicitely, because we have some code in HBEE.ear that reads standalone.xml to parse out the ref db values
 LOCAL_SOURCE_DIR=${HOME}
 
-cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
+cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
 
 
 #the variables PIM_DB_USER and PIM_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
