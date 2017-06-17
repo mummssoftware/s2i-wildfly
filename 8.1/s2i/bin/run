@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Source code provided to S2I is at ${HOME}
+#we do the variable substitution in standalone.xml for the ref db config here explicitely, because we have some code in HBEE.ear that reads standalone.xml to parse out the ref db values
 WILDFLY_HOME=/wildfly/standalone/configuration
 sed -i.bak s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
 sed -i.bak s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
