@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# Source code provided to S2I is at ${HOME}
+WILDFLY_HOME=/wildfly/standalone/configuration
+sed -i.bak s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
+sed -i.bak s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
+sed -i.bak s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
+sed -i.bak s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB/g $WILDFLY_HOME/standalone.xml
+
+
 #the variables PIM_DB_USER and PIM_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
 #ant -f /opt/hummingbird/data/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=/opt/hummingbird/data/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 
