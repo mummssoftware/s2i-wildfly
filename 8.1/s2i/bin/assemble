@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 PID_FILE=/tmp/wildfly.pid
 
