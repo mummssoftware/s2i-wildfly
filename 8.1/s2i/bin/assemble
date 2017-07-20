@@ -240,6 +240,9 @@ mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
 mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
 cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
 
+#this will be removed by an actual PIM code change improvement in JIRA # OP-15808
+sed -i.bak s/"mail\.mumms\.com"/"mail-gce\.mumms\.com"/ $LOCAL_SOURCE_DIR/hbgwt/HBUtil/src/mailConfig.properties
+
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_DB_PASSWORD "
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
