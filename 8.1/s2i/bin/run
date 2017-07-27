@@ -6,6 +6,7 @@ LOCAL_SOURCE_DIR=${HOME}
 while [ ! -f /opt/hummingbird/s2i/standalone.xml.src ]
 do
   sleep 10
+  echo "waiting for file /opt/hummingbird/s2i/standalone.xml.src to magically appear in the mounted vollume..."
 done
 
 cat /opt/hummingbird/s2i/standalone.xml.src > /wildfly/standalone/configuration/standalone.xml.src
