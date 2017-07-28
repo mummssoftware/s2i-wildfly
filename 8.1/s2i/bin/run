@@ -9,7 +9,7 @@ do
   echo "waiting for file /opt/hummingbird/s2i/standalone.xml.src to magically appear in the mounted vollume..."
 done
 
-cat /opt/hummingbird/s2i/standalone.xml.src > /wildfly/standalone/configuration/standalone.xml.src
+cp /opt/hummingbird/s2i/standalone.xml.src  /wildfly/standalone/configuration/standalone.xml.src
 
 cat  /wildfly/standalone/configuration/standalone.xml.src | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
 
