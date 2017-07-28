@@ -9,9 +9,9 @@ do
   echo "waiting for file /opt/hummingbird/s2i/standalone.xml.src to magically appear in the mounted vollume..."
 done
 
-cp /opt/hummingbird/s2i/standalone.xml.src  /wildfly/standalone/configuration/standalone-s2i.xml
+#cp /opt/hummingbird/s2i/standalone.xml.src  /wildfly/standalone/configuration/standalone-s2i.xml
 
-cat  /wildfly/standalone/configuration/standalone-s2i.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone-s2i.xml
+cat  /opt/hummingbird/s2i/standalone.xml.src | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone-s2i.xml
 
 
 #the variables PIM_DB_USER and PIM_DB_PASSWORD will be supplied using Kubernetes secrets in the pod definition
