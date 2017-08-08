@@ -253,7 +253,8 @@ ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_US
 cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml /wildfly/standalone/configuration/standalone.xml.src
 cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
-ant  -Dfile.encoding=UTF8 -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DpasswordModuleRequired=true   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
+ant  -Dfile.encoding=UTF8 -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DpasswordModuleRequired=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
+
 echo "extracting hb-data.tar"
 mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 cd /opt/hummingbird/data/
