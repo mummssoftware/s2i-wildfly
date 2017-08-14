@@ -245,7 +245,7 @@ cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/H
 sed -i.bak s/"mail\.mumms\.com"/"mail-gce\.mumms\.com"/ $LOCAL_SOURCE_DIR/hbgwt/HBUtil/src/mailConfig.properties
 
 cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
-echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_DB_PASSWORD "
+echo "liquifying root db $PIM_ROOT_DB "
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
 ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 echo "liquifying ref db"
@@ -268,6 +268,14 @@ cp -Rf $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/
 #if we need to, then run the unit tests
 if [ "$RUN_UNIT_TESTS" = "true" ] 
 then
+    echo "liquifying root db $PIM_ROOT_DB "
+    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
+    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
+    echo "liquifying ref db"
+    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/liquibase/changelog/ref-db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_REF_DB_HOST:5432/hummingbird_reference liquibase-update-ref-db -Ddatabase.name=hummingbird_reference
+    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml /wildfly/standalone/configuration/standalone.xml.src
+    cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g  > /wildfly/standalone/configuration/standalone.xml
+cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
    cd $LOCAL_SOURCE_DIR/hbgwt/HBUnitTest/;
    unset LDAP_HOST;
    cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources/* /opt/hummingbird/data/hbgwt/HBEJB/resources/
