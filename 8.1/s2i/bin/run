@@ -4,7 +4,7 @@ LOCAL_SOURCE_DIR=${HOME}
 
 
 if [ "$IS_DEV_INSTANCE" eq "true" ]; then
-    cat  /opt/hummingbird/s2i/standalone.xml.src | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g  > /wildfly/standalone/configuration/standalone-s2i.xml
+    cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g  > /wildfly/standalone/configuration/standalone-s2i.xml
     exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --server-config=standalone-s2i.xml $JVM_ARGS -DLDAP_HOST=$LDAP_HOST -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT
 else
 #this while loop means that deployment will stall (because the health check will fail unit HBEE starts up)
@@ -18,7 +18,5 @@ else
     exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --server-config=standalone-s2i.xml $JVM_ARGS -DLDAP_HOST=$LDAP_HOST -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT
 fi
 
-
-exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --server-config=standalone-s2i.xml $JVM_ARGS -DLDAP_HOST=$LDAP_HOST -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB=$PIM_REF_DB -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT 
 
 
