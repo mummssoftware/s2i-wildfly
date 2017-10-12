@@ -15,7 +15,7 @@ else
 	echo "waiting for file /opt/hummingbird/s2i/standalone.xml.src to magically appear in the mounted vollume..."
     done
     cp  /opt/hummingbird/s2i/standalone.xml.src /wildfly/standalone/configuration/standalone-s2i.xml
-    exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --server-config=standalone-s2i.xml $JVM_ARGS -DLDAP_HOST=$LDAP_HOST -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT
+    exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0 --server-config=standalone-s2i.xml $JVM_ARGS  -DREDIS_HOST=$REDIS_HOST -DREDIS_PORT=$REDIS_PORT
 fi
 
 
