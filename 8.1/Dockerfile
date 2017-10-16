@@ -61,6 +61,7 @@ RUN chown -R 1001:0 /wildfly  && \
     chmod -R g+rw /opt/hummingbird/data/ && \
     chmod -R g+rw /opt/s2i/destination
 
+RUN /wildfly/bin/add-user.sh --silent=true test-admin '^NtEEzYULRt?dJ7?X3$w83FtrbMk'
 
 USER 1001
 
