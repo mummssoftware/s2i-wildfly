@@ -34,6 +34,11 @@ RUN     gunzip /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz && \
     rm -rf /tmp/wildfly-$WILDFLY_VERSION_BIN && \
     mkdir -p /opt/s2i/destination
 
+RUN wget https://github.com/openshift/origin/releases/download/v3.6.0/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz  && \
+    tar -xf openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit.tar.gz
+
+ENV PATH="${HOME}/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/:${PATH}"
+
 # Add s2i wildfly customizations
 #ADD ./contrib/wfmodules/ /wildfly/modules/
 #ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
