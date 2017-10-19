@@ -1,0 +1,426 @@
+apiVersion: v1
+kind: Template
+labels:
+  template: pim-tests-template
+metadata:
+  annotations:
+    description: 'Template for instantiating the pods necessary to run PIM unit tests'
+  name: pim-tests-template
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      name: pim-root-db-${INSTANCE_LABEL}
+      instance: ${INSTANCE_LABEL}
+    name: pim-root-db-${INSTANCE_LABEL}
+  spec:
+    ports:
+    - name: postgresql
+      nodePort: 0
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: pim-root-db-${INSTANCE_LABEL}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: pim-root-db-${INSTANCE_LABEL}
+      instance:	${INSTANCE_LABEL}
+    name: pim-root-db-${INSTANCE_LABEL}
+  spec:
+    replicas: 1
+    selector:
+      name: pim-root-db-${INSTANCE_LABEL}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: pim-root-db-${INSTANCE_LABEL}
+          instance:	${INSTANCE_LABEL}
+      spec:
+        containers:
+        - capabilities: {}
+          env:
+          - name: PIM_DB_USER
+            value: hummingbird
+          - name: PIM_DB_PASSWORD
+            value: hummingbird
+          - name: POSTGRESQL_DATABASE
+            value: hummingbird
+          image: ${DOCKER_REGISTRY}/${NAMESPACE}/pim-root-db:latest
+          imagePullPolicy: Always
+#          livenessProbe:
+#            initialDelaySeconds: 30
+#            tcpSocket:
+#              port: 5432
+#            timeoutSeconds: 1
+          name: pim-root-db-${INSTANCE_LABEL}
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+#          readinessProbe:
+#            exec:
+#              command:
+#              - /bin/sh
+#              - -i
+#              - -c
+#              - psql -h 127.0.0.1 -U $PIM_DB_USER -q -d $POSTGRESQL_DATABASE -c
+#                'SELECT 1'
+#            initialDelaySeconds: 5
+#            timeoutSeconds: 1
+          securityContext:
+            capabilities: {}
+            privileged: false
+    triggers:
+    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      name: pim-ref-db-${INSTANCE_LABEL}
+      instance:	${INSTANCE_LABEL}
+    name: pim-ref-db-${INSTANCE_LABEL}
+  spec:
+    ports:
+    - name: postgresql
+      nodePort: 0
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: pim-ref-db-${INSTANCE_LABEL}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: pim-ref-db-${INSTANCE_LABEL}
+      instance:	${INSTANCE_LABEL}
+    name: pim-ref-db-${INSTANCE_LABEL}
+  spec:
+    replicas: 1
+    selector:
+      name: pim-ref-db-${INSTANCE_LABEL}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: pim-ref-db-${INSTANCE_LABEL}
+          instance:	${INSTANCE_LABEL}
+      spec:
+        containers:
+        - capabilities: {}
+          env:
+          - name: PIM_DB_USER
+            value: hummingbird
+          - name: PIM_DB_PASSWORD
+            value: hummingbird
+          - name: POSTGRESQL_DATABASE
+            value: hummingbird_reference
+          image: ${DOCKER_REGISTRY}/${NAMESPACE}/pim-ref-db:latest
+          imagePullPolicy: Always
+#          livenessProbe:
+#            initialDelaySeconds: 30
+#            tcpSocket:
+#              port: 5432
+#            timeoutSeconds: 1
+          name: pim-ref-db-${INSTANCE_LABEL}
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+#          readinessProbe:
+#            exec:
+#              command:
+#              - /bin/sh
+#              - -i
+#              - -c
+#              - psql -h 127.0.0.1 -U $PIM_DB_USER -q -d $POSTGRESQL_DATABASE -c
+#                'SELECT 1'
+#            initialDelaySeconds: 5
+#            timeoutSeconds: 1
+    triggers:
+    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      name: pim-admin-db-${INSTANCE_LABEL}
+      instance:	${INSTANCE_LABEL}
+    name: pim-admin-db-${INSTANCE_LABEL}
+  spec:
+    ports:
+    - name: postgresql
+      nodePort: 0
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      name: pim-admin-db-${INSTANCE_LABEL}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: pim-admin-db-${INSTANCE_LABEL}
+      instance:	${INSTANCE_LABEL}
+    name: pim-admin-db-${INSTANCE_LABEL}
+  spec:
+    replicas: 1
+    selector:
+      name: pim-admin-db-${INSTANCE_LABEL}
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: pim-admin-db-${INSTANCE_LABEL}
+          instance:	${INSTANCE_LABEL}
+      spec:
+        containers:
+        - capabilities: {}
+          env:
+          - name: PIM_DB_USER
+            value: hummingbird
+          - name: PIM_DB_PASSWORD
+            value: hummingbird
+          - name: POSTGRESQL_DATABASE
+            value: hummingbirdadmin
+          image: ${DOCKER_REGISTRY}/${NAMESPACE}/pim-admin-db:latest
+          imagePullPolicy: Always
+#          livenessProbe:
+#            initialDelaySeconds: 30
+#            tcpSocket:
+#              port: 5432
+#            timeoutSeconds: 1
+          name: pim-admin-db-${INSTANCE_LABEL}
+          ports:
+          - containerPort: 5432
+            protocol: TCP
+#          readinessProbe:
+#            exec:
+#              command:
+#              - /bin/sh
+#              - -i
+#              - -c
+#              - psql -h 127.0.0.1 -U $PIM_DB_USER -q -d $POSTGRESQL_DATABASE -c
+#                'SELECT 1'
+#            initialDelaySeconds: 5
+#            timeoutSeconds: 1
+    triggers:
+    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      name: wf-tst-${INSTANCE_LABEL}
+      instance: ${INSTANCE_LABEL}
+    name: wf-tst-${INSTANCE_LABEL}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: wf-tst-${INSTANCE_LABEL}
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          deploymentconfig: wf-tst-${INSTANCE_LABEL}
+          name: wf-tst-${INSTANCE_LABEL}
+          instance: ${INSTANCE_LABEL}
+      spec:
+        containers:
+        - env:
+          - name: PATH
+            value: /opt/app-root/src/bin:/opt/app-root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          - name: STI_SCRIPTS_URL
+            value: image:///usr/libexec/s2i
+          - name: STI_SCRIPTS_PATH
+            value: /usr/libexec/s2i
+          - name: HOME
+            value: /opt/app-root/src
+          - name: BASH_ENV
+            value: /opt/app-root/etc/scl_enable
+          - name: ENV
+            value: /opt/app-root/etc/scl_enable
+          - name: PROMPT_COMMAND
+            value: . /opt/app-root/etc/scl_enable
+          - name: WILDFLY_VERSION
+            value: "8.1"
+          - name: WILDFLY_VERSION_BIN
+            value: 8.1.0.Final
+          - name: MAVEN_VERSION
+            value: 3.3.3  
+          - name: RUN_WILDFLY_SERVER
+            value: "true"
+          - name: PIM_ROOT_DB
+            value: pim-root-db-${INSTANCE_LABEL}
+          - name: PIM_REF_DB_HOST
+            value: pim-ref-db-${INSTANCE_LABEL}
+          - name: PIM_REF_DB_NAME
+            value: hummingbird_reference
+          - name: PIM_REF_DB_USER
+            value: hummingbird
+          - name: PIM_REF_DB_PASSWORD
+            value: hummingbird
+          - name: PIM_DB_PASSWORD
+            value: hummingbird
+          - name: PIM_DB_USER
+            value: hummingbird
+          - name: PIM_ADMIN_DB
+            value: pim-admin-db-${INSTANCE_LABEL}              
+          image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-builder:latest
+          imagePullPolicy: Always
+          name: wf-tst-${INSTANCE_LABEL}
+          ports:
+          - containerPort: 9990
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - wf-tst-${INSTANCE_LABEL}
+        from:
+          kind: ImageStreamTag
+          name: wf-tst-${INSTANCE_LABEL}:latest
+      type: ImageChange
+    - type: ConfigChange
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      name: wf-tst-${INSTANCE_LABEL}
+      instance: ${INSTANCE_LABEL}
+    annotations:
+    name: wf-tst-${INSTANCE_LABEL}
+  spec:
+    ports:
+    - name: 9990-tcp
+      port: 9990
+      protocol: TCP
+      targetPort: 9990
+    selector:
+      deploymentconfig: wf-tst-${INSTANCE_LABEL}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      name: wf-tst-${INSTANCE_LABEL}
+      instance: ${INSTANCE_LABEL}
+    name: wf-tst-${INSTANCE_LABEL}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: wf-tst-${INSTANCE_LABEL}:latest
+    postCommit: {}
+    resources: {}
+    source:
+      binary: {}
+      secrets: null
+      type: Binary
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: wf-tst-builder:latest
+      type: Source
+    triggers:
+  status:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      name: wf-tst-${INSTANCE_LABEL}
+      instance: ${INSTANCE_LABEL}
+    name: wf-tst-${INSTANCE_LABEL}
+  spec: {}
+  status:
+#- apiVersion: v1
+#  kind: Route
+#  metadata:
+#    labels:
+#      name: pim-wf-${INSTANCE_LABEL}
+#      template: pim-services-template
+#    name: pim-wf-${INSTANCE_LABEL}
+#  spec:
+#    host: ${INSTANCE_LABEL}.container-poc.gcs.mumms.com
+#    port:
+#      targetPort: 8080-tcp
+#    to:
+#      kind: Service
+#      name: pim-wf-${INSTANCE_LABEL}
+#  status:
+#    ingress:
+#    - conditions:
+#        status: "True"
+#        type: Admitted
+#      host: test-wf.container-poc.gcs.mumms.com
+#      routerName: router
+parameters:
+#- description: Maximum amount of memory the container can use.
+#  displayName: Memory Limit
+#  name: MEMORY_LIMIT
+#  value: 1024Mi
+- description: use default standalone.xml, as in GIT_HOME/hbgwt/docker/wildfly/8.1 of our hummingbird repo, or use a config map for standalone.xml
+  displayName: USE_DEFAULT_STANDALONE_XML
+  name: IS_DEV_INSTANCE
+  required: true
+  value: "true"
+- description: arbitrary jvm args. useful to override standalone.xml jndi vars or other configuration properties
+  displayName: JVM_ARGS
+  name: JVM_ARGS
+  required: false
+- description: PIM Instance Label. Set this parameter to something like "hb-xxxx", and the hostname will be prefixed by it. You'll also be able to tear down the entire instance by using this label
+  displayName: PIM Instance Label
+  name: INSTANCE_LABEL
+  required: true 
+- description: the project namespace
+  displayName: NAMESPACE
+  name: NAMESPACE
+  value: pim
+  required: true
+- description: docker registry
+  displayName: docker registry
+  name: DOCKER_REGISTRY
+  required: true  
+  value: "172.167.35.31:5000"

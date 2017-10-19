@@ -48,7 +48,7 @@ COPY customizations/undertow-servlet-1.0.15.Final.jar /wildfly/modules/system/la
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
-
+COPY ./openshift/pim-services-tests-template.yaml 
 #lets add our postgres driver
 COPY ./postgres/postgresql-9.4.1208.jre6.jar /tmp/
 RUN  /bin/sh -c "/wildfly/bin/standalone.sh &" && \
@@ -63,8 +63,10 @@ RUN chown -R 1001:0 /wildfly  && \
     chown -R 1001:0 $HOME/.pki && \
     chmod -R a+rwx /wildfly && \
     mkdir -p /opt/hummingbird/data/ && \
-    chmod -R g+rw /opt/hummingbird/data/ && \
+    chmod -R g+rw /opt/hummingbird/ && \
     chmod -R g+rw /opt/s2i/destination
+
+COPY ./openshift/pim-services-tests-template.yaml /opt/hummingbird/
 
 RUN /wildfly/bin/add-user.sh --silent=true test-admin '^NtEEzYULRt?dJ7?X3$w83FtrbMk'
 

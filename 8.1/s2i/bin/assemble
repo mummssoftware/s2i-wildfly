@@ -267,7 +267,6 @@ function buildPIM(){
     mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
     cd /opt/hummingbird/data/
     tar xvf hb-data.tar > /dev/null 2> /dev/null
-    rm hb-data.tar
     echo "setting up files for running liquibase on startup"
     mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/
     cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBJPA/* /opt/hummingbird/data/hbgwt/HBJPA/
@@ -300,8 +299,10 @@ function buildPIM(){
 }
 
 if [ "$(ls -A /tmp/src/hb-data.tar.gz)" ]; then
+    echo "found hb-data.tar.gz in s2i input."
     creaetUnitTester;
 else
+    echo "did not find hb-data.tar.gz in s2i input. proceeding to build PIM"
     buildPIM;
 fi
 
