@@ -48,7 +48,6 @@ COPY customizations/undertow-servlet-1.0.15.Final.jar /wildfly/modules/system/la
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
-COPY ./openshift/pim-services-tests-template.yaml 
 #lets add our postgres driver
 COPY ./postgres/postgresql-9.4.1208.jre6.jar /tmp/
 RUN  /bin/sh -c "/wildfly/bin/standalone.sh &" && \
