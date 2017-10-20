@@ -164,7 +164,8 @@ mkdir -p $DEPLOY_DIR
 
 # Copy the source for compilation
 mv /opt/s2i/destination/src/* $LOCAL_SOURCE_DIR
-mv /opt/s2i/destination/src/.git $LOCAL_SOURCE_DIR/
+# we move the git repo that was checked out, but don't exit if it fails, as we may be doing a build for a simple wf tester image
+mv /opt/s2i/destination/src/.git $LOCAL_SOURCE_DIR/ || true;
 
 chgrp -R 0 $LOCAL_SOURCE_DIR
 chmod -R g+rw $LOCAL_SOURCE_DIR
