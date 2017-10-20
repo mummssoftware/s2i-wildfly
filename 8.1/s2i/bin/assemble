@@ -301,7 +301,7 @@ function buildPIM(){
 
 if [ "$(ls -A $LOCAL_SOURCE_DIR/hb-data.tar.gz)" ]; then
     echo "found hb-data.tar.gz in s2i input."
-    creaetUnitTester;
+    createUnitTester;
 else
     echo "did not find hb-data.tar.gz in s2i input. proceeding to build PIM"
     buildPIM;
