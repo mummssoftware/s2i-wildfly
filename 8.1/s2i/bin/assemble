@@ -281,7 +281,7 @@ function buildPIM(){
 	    echo "spinning up unit test assets.."
 	    oc login https://master.gca-dev.mumms.com --token=$OC_LOGIN_TOKEN
 	    oc project pim
-	    oc process -f /opt/hummingbird/pim-services-tests-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL-tests | oc create-f
+	    oc process -f /opt/hummingbird/pim-services-tests-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL-tests | oc create -f - 
 
 	    mkdir -p $LOCAL_SOURCE_DIR/openshift-tests
 	    mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
