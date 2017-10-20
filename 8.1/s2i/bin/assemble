@@ -236,12 +236,12 @@ fi
 function createUnitTester(){
      echo "unpacking hb-data.tar.gz to create a unit tester wf image.."
      echo "extracting hb-data.tar"
-     mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
+     mv $LOCAL_SOURCE_DIR/hb-data.tar.gz /opt/hummingbird/data/
      cd /opt/hummingbird/data/
+     gunzip hb-data.tar.gz
      tar xvf hb-data.tar > /dev/null 2> /dev/null
      rm hb-data.tar
      return 0;
-
 }
 
 function buildPIM(){
