@@ -299,7 +299,7 @@ function buildPIM(){
 
 }
 
-if [ "$(ls -A /tmp/src/hb-data.tar.gz)" ]; then
+if [ "$(ls -A $LOCAL_SOURCE_DIR/hb-data.tar.gz)" ]; then
     echo "found hb-data.tar.gz in s2i input."
     creaetUnitTester;
 else
