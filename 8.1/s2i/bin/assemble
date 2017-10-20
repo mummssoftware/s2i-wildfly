@@ -284,7 +284,7 @@ function buildPIM(){
 	    oc process -f /opt/hummingbird/pim-services-tests-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL-tests | oc create -f - 
 
 	    mkdir -p $LOCAL_SOURCE_DIR/openshift-tests
-	    mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
+	    mv /opt/hummingbird/data/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
 	    gzip $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar
 	    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml $LOCAL_SOURCE_DIR/openshift-tests/
 	    oc start-build --from-dir=$LOCAL_SOURCE_DI/openshift-tests/  bc/wf-tst-$INSTANCE_LABEL-tests
