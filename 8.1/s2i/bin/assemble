@@ -241,7 +241,6 @@ function createUnitTester(){
      gunzip hb-data.tar.gz
      tar xvf hb-data.tar > /dev/null 2> /dev/null
      rm hb-data.tar
-     return 0;
 }
 
 function buildPIM(){
@@ -310,6 +309,7 @@ fi
 #################### HBEE related assembly #########################
 
 echo "...done"
+exit 0;
 
 # This logic is intended to deploy the app as part of assemble
 # but many apps fail to deploy because they require additional
@@ -341,4 +341,4 @@ echo "...done"
 # remove admin user
 #sed -i '/^#/! s/^/#/' /wildfly/{standalone,domain}/configuration/mgmt-{groups,users}.properties
 
-exit $rc
+#exit $rc
