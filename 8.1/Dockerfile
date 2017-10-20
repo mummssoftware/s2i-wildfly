@@ -41,7 +41,7 @@ RUN mkdir -p /opt/openshift/ && \
     chmod -R g+rw /opt/openshift && \
     cd ${HOME}
 
-ENV PATH="${HOME}/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/:${PATH}"
+ENV PATH="/opt/openshift/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/:${PATH}"
 
 # Add s2i wildfly customizations
 #ADD ./contrib/wfmodules/ /wildfly/modules/
