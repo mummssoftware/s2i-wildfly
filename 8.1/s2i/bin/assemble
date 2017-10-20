@@ -233,7 +233,7 @@ if [ -d $LOCAL_SOURCE_DIR/modules ]; then
 fi
 
 #################### HBEE related assembly #########################
-function createUnitTesterImage(){
+function createUnitTester(){
      echo "unpacking hb-data.tar.gz to create a unit tester wf image.."
      echo "extracting hb-data.tar"
      mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/

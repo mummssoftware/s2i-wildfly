@@ -49,9 +49,7 @@ ENV PATH="${HOME}/openshift-origin-client-tools-v3.6.0-c4dd4cf-linux-64bit/:${PA
 #ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
 COPY customizations/undertow-servlet-1.0.15.Final.jar /wildfly/modules/system/layers/base/io/undertow/servlet/main/
 
-# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 
-COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 #lets add our postgres driver
 COPY ./postgres/postgresql-9.4.1208.jre6.jar /tmp/
 RUN  /bin/sh -c "/wildfly/bin/standalone.sh &" && \
@@ -60,7 +58,8 @@ RUN  /bin/sh -c "/wildfly/bin/standalone.sh &" && \
     /wildfly/bin/jboss-cli.sh --connect	 --command=:shutdown && \
     rm -rf /tmp/postgresql-9.4.1208.jre6.jar
 
-
+# Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
+COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
 RUN chown -R 1001:0 /wildfly  && \
     chown -R 1001:0 $HOME/.pki && \
