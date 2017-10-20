@@ -278,7 +278,7 @@ objects:
             value: 8.1.0.Final
           - name: MAVEN_VERSION
             value: 3.3.3  
-          - name: RUN_WILDFLY_SERVER
+          - name: IS_UNIT_TESTER
             value: "true"
           - name: PIM_ROOT_DB
             value: pim-root-db-${INSTANCE_LABEL}
