@@ -84,14 +84,6 @@ objects:
         terminationGracePeriodSeconds: 30
     test: false
     triggers:
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - wf-tst-${INSTANCE_LABEL}-${TEST_THREAD}
-        from:
-          kind: ImageStreamTag
-          name: wf-tst-${INSTANCE_LABEL}:latest
-      type: ImageChange
     - type: ConfigChange
   status: {}
 - apiVersion: v1
