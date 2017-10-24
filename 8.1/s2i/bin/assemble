@@ -287,17 +287,17 @@ function buildPIM(){
 	    mv /opt/hummingbird/data/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
 	    gzip $LOCAL_SOURCE_DIR/openshift-tests/hb-data.tar
 	    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml $LOCAL_SOURCE_DIR/openshift-tests/wildfly/
-	    oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=1 | oc create -f -
-	    oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=2 | oc create -f -
-            oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
             oc start-build --from-dir=$LOCAL_SOURCE_DIR/openshift-tests/  bc/wf-tst-$INSTANCE_LABEL
 	    oc logs -f bc/wf-tst-$INSTANCE_LABEL
-	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-1
-	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-2
-	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-3
-	    oc deploy wf-tst-$INSTANCE_LABEL-1
-	    oc deploy wf-tst-$INSTANCE_LABEL-2
-	    oc deploy wf-tst-$INSTANCE_LABEL-3
+            oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=1 | oc create -f -
+            oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=2 | oc create -f -
+            oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
+#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-1
+#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-2
+#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-3
+#	    oc deploy wf-tst-$INSTANCE_LABEL-1
+#	    oc deploy wf-tst-$INSTANCE_LABEL-2
+#	    oc deploy wf-tst-$INSTANCE_LABEL-3
 
 	    echo "liquifying root db $PIM_ROOT_DB "
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy

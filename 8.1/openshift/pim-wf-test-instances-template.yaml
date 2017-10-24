@@ -20,13 +20,9 @@ objects:
       deploymentconfig: wf-tst-${INSTANCE_LABEL}-${TEST_THREAD}
     strategy:
       resources: {}
-      rollingParams:
-        intervalSeconds: 1
-        maxSurge: 25%
-        maxUnavailable: 25%
+      recreateParams:
         timeoutSeconds: 600
-        updatePeriodSeconds: 1
-      type: Rolling
+      type: Recreate
     template:
       metadata:
         labels:
