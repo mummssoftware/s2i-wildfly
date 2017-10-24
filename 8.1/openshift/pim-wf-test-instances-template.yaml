@@ -74,7 +74,7 @@ objects:
             value: hummingbird
           - name: PIM_ADMIN_DB
             value: pim-admin-db-${INSTANCE_LABEL}              
-          image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-builder:latest
+          image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-${INSTANCE_LABEL}:latest
           imagePullPolicy: Always
           name: wf-tst-${INSTANCE_LABEL}
           ports:
