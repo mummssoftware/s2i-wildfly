@@ -290,9 +290,10 @@ function buildPIM(){
 	    mv /opt/hummingbird/data/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
 	    
 	    echo "gtarring hbgwt directory for input into wf test build.."
+	    cd $LOCAL_SOURCE_DIR;
 	    gtar cvf hbgwt.tar.gz hbgwt
 	    mv hbgwt.tar.gz $LOCAL_SOURCE_DIR/openshift-tests/
-
+	    cd /opt/hummingbird/data/
 	    
 	    gzip $LOCAL_SOURCE_DIR/openshift-tests/hb-data.tar
 	    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml $LOCAL_SOURCE_DIR/openshift-tests/wildfly/
