@@ -76,6 +76,8 @@ objects:
           ports:
           - containerPort: 9990
             protocol: TCP
+          - containerPort: 8080
+            protocol: TCP
           resources: {}
           terminationMessagePath: /dev/termination-log
         dnsPolicy: ClusterFirst
@@ -100,6 +102,10 @@ objects:
       port: 9990
       protocol: TCP
       targetPort: 9990
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
     selector:
       deploymentconfig: wf-tst-${INSTANCE_LABEL}-${TEST_THREAD}
     sessionAffinity: None
