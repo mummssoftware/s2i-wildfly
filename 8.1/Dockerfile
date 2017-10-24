@@ -69,6 +69,7 @@ RUN chown -R 1001:0 /wildfly  && \
     chmod -R g+rw /opt/s2i/destination
 
 COPY ./openshift/pim-services-tests-template.yaml /opt/hummingbird/
+COPY ./openshift/pim-wf-test-instances-template.yaml /opt/hummingbird/
 
 RUN /wildfly/bin/add-user.sh --silent=true test-admin '^NtEEzYULRt?dJ7?X3$w83FtrbMk'
 
