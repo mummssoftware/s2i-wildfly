@@ -292,9 +292,13 @@ function buildPIM(){
             oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
             oc start-build --from-dir=$LOCAL_SOURCE_DIR/openshift-tests/  bc/wf-tst-$INSTANCE_LABEL
 	    oc logs -f bc/wf-tst-$INSTANCE_LABEL
-	    
-	    
-	    
+	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-1
+	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-2
+	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-3
+	    oc deploy wf-tst-$INSTANCE_LABEL-1
+	    oc deploy wf-tst-$INSTANCE_LABEL-2
+	    oc deploy wf-tst-$INSTANCE_LABEL-3
+
 	    echo "liquifying root db $PIM_ROOT_DB "
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}:5432/ liquibase-update-database -Ddatabase.name=hummingbird
