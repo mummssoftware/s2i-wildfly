@@ -242,7 +242,7 @@ function createUnitTester(){
      tar xvf hb-data.tar > /dev/null 2> /dev/null
      rm hb-data.tar
      mv $LOCAL_SOURCE_DIR/hbgwt.tar.gz /opt/hummingbird/data/
-     gtar hbgwt.tar.gz > /dev/null 2> /dev/null
+     gtar -xvf hbgwt.tar.gz > /dev/null 2> /dev/null
      rm hbgwt.tar.gz
 }
 
