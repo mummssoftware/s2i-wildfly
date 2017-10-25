@@ -291,7 +291,7 @@ function buildPIM(){
 	    
 	    echo "gtarring hbgwt directory for input into wf test build.."
 	    cd $LOCAL_SOURCE_DIR;
-	    gtar cf hbgwt.tar.gz hbgwt
+	    gtar cf hbgwt.tar.gz hbgwt/HBEJB hbgwt/HBJPA hbgwt/HBRefJPA/
 	    mv hbgwt.tar.gz $LOCAL_SOURCE_DIR/openshift-tests/
 	    cd /opt/hummingbird/data/
 	    
