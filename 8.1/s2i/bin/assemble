@@ -310,7 +310,7 @@ function buildPIM(){
 #	    oc deploy wf-tst-$INSTANCE_LABEL-2
 #	    oc deploy wf-tst-$INSTANCE_LABEL-3
 
-
+	    sleep 30;
             ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
 	    echo "liquifying root dbs pim-root-db-${INSTANCE_LABEL}-1 m-root-db-${INSTANCE_LABEL}-2 and m-root-db-${INSTANCE_LABEL}-3 "
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}-1:5432/ liquibase-update-database -Ddatabase.name=hummingbird 
