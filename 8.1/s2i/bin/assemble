@@ -233,14 +233,17 @@ if [ -d $LOCAL_SOURCE_DIR/modules ]; then
 fi
 
 #################### HBEE related assembly #########################
+
+#this function assembles this wf image into a PIM WF unit test server
 function createUnitTester(){
-     echo "unpacking hb-data.tar.gz to create a unit tester wf image.."
+     echo "creating a unit tester wf image.."
      echo "extracting hb-data.tar"
      mv $LOCAL_SOURCE_DIR/hb-data.tar.gz /opt/hummingbird/data/
      cd /opt/hummingbird/data/
      gunzip hb-data.tar.gz
      tar xvf hb-data.tar > /dev/null 2> /dev/null
      rm hb-data.tar
+     echo "extracting the hbgwt directory from the pim git repo"
      mv $LOCAL_SOURCE_DIR/hbgwt.tar.gz /opt/hummingbird/data/
      gtar -xvf hbgwt.tar.gz > /dev/null 2> /dev/null
      rm hbgwt.tar.gz
@@ -250,10 +253,12 @@ function buildPIM(){
     
     restore_saved_artifacts
     JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+
     echo "creating $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties"
     echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties
     echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
     mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated $LOCAL_SOURCE_DIR/hbgwt/HBEE/EarContent/lib
+
     mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
     cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
     
@@ -262,8 +267,12 @@ function buildPIM(){
     
     cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
     cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml /wildfly/standalone/configuration/standalone.xml.src
+    #we currently have to do a text replace for ref db credentials, vs using a variable in standalone.xml, because we have PIM java code
+    #that reads the actual standalone.xml file, and will not be able to parse the variable
     cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
+
     cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
+    "compiling HBEE.ear"
     ant  -Dfile.encoding=UTF8 -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DpasswordModuleRequired=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build
     
     echo "extracting hb-data.tar"
@@ -289,7 +298,7 @@ function buildPIM(){
 	    mkdir -p $LOCAL_SOURCE_DIR/openshift-tests/wildfly
 	    mv /opt/hummingbird/data/hb-data.tar $LOCAL_SOURCE_DIR/openshift-tests/
 	    
-	    echo "gtarring hbgwt directory for input into wf test build.."
+	    echo "gtarring hbgwt directory for input into wf tester build.."
 	    cd $LOCAL_SOURCE_DIR;
 	    gtar cf hbgwt.tar.gz hbgwt/HBEJB hbgwt/HBJPA hbgwt/HBRefJPA/
 	    mv hbgwt.tar.gz $LOCAL_SOURCE_DIR/openshift-tests/
@@ -297,22 +306,22 @@ function buildPIM(){
 	    
 	    gzip $LOCAL_SOURCE_DIR/openshift-tests/hb-data.tar
 	    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml $LOCAL_SOURCE_DIR/openshift-tests/wildfly/
+	    echo "building the Wildfly tester image. multiple Wildfly pods will be spun up from this image, to run parallel tests on.."
             oc start-build --from-dir=$LOCAL_SOURCE_DIR/openshift-tests/  bc/wf-tst-$INSTANCE_LABEL
 	    oc logs -f bc/wf-tst-$INSTANCE_LABEL
+
+	    echo "spinning up Wildfly test servers, and their PIM root database pods.."
             oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=1 | oc create -f -
             oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=2 | oc create -f -
             oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
 	    oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=4 | oc create -f -
-#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-1
-#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-2
-#	    oc scale --replicas=1 dc wf-tst-$INSTANCE_LABEL-3
-#	    oc deploy wf-tst-$INSTANCE_LABEL-1
-#	    oc deploy wf-tst-$INSTANCE_LABEL-2
-#	    oc deploy wf-tst-$INSTANCE_LABEL-3
 
+	    #sleeping here to make sure that wf and pim-root-db pods start up
+	    #TO-DO: this should be replace via health checks in Openshift
 	    sleep 30;
+
             ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
-	    echo "liquifying root dbs pim-root-db-${INSTANCE_LABEL}-1 m-root-db-${INSTANCE_LABEL}-2 and m-root-db-${INSTANCE_LABEL}-3 "
+	    echo "liquifying root dbs.. "
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}-1:5432/ liquibase-update-database -Ddatabase.name=hummingbird 
             
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}-2:5432/ liquibase-update-database -Ddatabase.name=hummingbird 
