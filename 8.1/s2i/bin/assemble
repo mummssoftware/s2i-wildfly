@@ -316,6 +316,7 @@ function buildPIM(){
             oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
 	    oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=4 | oc create -f -
       oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=5 | oc create -f -
+      oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=6 | oc create -f -
 
 	    #sleeping here to make sure that wf and pim-root-db pods start up
 	    #TO-DO: this should be replace via health checks in Openshift
@@ -333,7 +334,9 @@ function buildPIM(){
 
       ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}-5:5432/ liquibase-update-database -Ddatabase.name=hummingbird
 
-	    echo "liquifying ref db"
+      ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-root-db-${INSTANCE_LABEL}-6:5432/ liquibase-update-database -Ddatabase.name=hummingbird
+	    
+      echo "liquifying ref db"
 	    ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/liquibase/changelog/ref-db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://pim-ref-db-${INSTANCE_LABEL}:5432/hummingbird_reference liquibase-update-ref-db -Ddatabase.name=hummingbird_reference
 	    cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml /wildfly/standalone/configuration/standalone.xml.src
 	    cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/"pim-ref-db-$INSTANCE_LABEL"/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
