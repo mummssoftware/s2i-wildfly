@@ -233,6 +233,10 @@ parameters:
   displayName: TEST_THREAD
   name: TEST_THREAD
   required: true
+- description: the parallelization unit test group name
+  displayName: TEST_GROUP
+  name: TEST_GROUP
+  required: false
 - description: the project namespace
   displayName: NAMESPACE
   name: NAMESPACE
