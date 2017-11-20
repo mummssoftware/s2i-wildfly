@@ -72,6 +72,8 @@ objects:
             value: pim-admin-db-${INSTANCE_LABEL}              
           - name: TEST_GROUP
             value: ${TEST_GROUP}
+          - name: JAVA_OPTS_EXT
+            value: ${JAVA_OPTS_EXT}
           image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-${INSTANCE_LABEL}:latest
           imagePullPolicy: Always
           name: wf-tst-${INSTANCE_LABEL}
