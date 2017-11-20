@@ -237,6 +237,10 @@ parameters:
   displayName: TEST_GROUP
   name: TEST_GROUP
   required: false
+- description: arbitrary JAVA_OPTS_EXT args. useful to override standalone.xml jndi vars or other configuration properties
+  displayName: JAVA_OPTS_EXT
+  name: JAVA_OPTS_EXT
+  required: false
 - description: the project namespace
   displayName: NAMESPACE
   name: NAMESPACE
