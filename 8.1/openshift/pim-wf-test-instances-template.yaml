@@ -74,6 +74,8 @@ objects:
             value: ${TEST_GROUP}
           - name: JAVA_OPTS
             value: ${JAVA_OPTS}
+          - name: JVM_ARGS
+            value: ${JVM_ARGS}
           image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-${INSTANCE_LABEL}:latest
           imagePullPolicy: Always
           name: wf-tst-${INSTANCE_LABEL}
