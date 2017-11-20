@@ -72,8 +72,8 @@ objects:
             value: pim-admin-db-${INSTANCE_LABEL}              
           - name: TEST_GROUP
             value: ${TEST_GROUP}
-          - name: JAVA_OPTS_EXT
-            value: ${JAVA_OPTS_EXT}
+          - name: JAVA_OPTS
+            value: ${JAVA_OPTS}
           image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-${INSTANCE_LABEL}:latest
           imagePullPolicy: Always
           name: wf-tst-${INSTANCE_LABEL}
@@ -239,9 +239,9 @@ parameters:
   displayName: TEST_GROUP
   name: TEST_GROUP
   required: false
-- description: arbitrary JAVA_OPTS_EXT args. useful to override standalone.xml jndi vars or other configuration properties
-  displayName: JAVA_OPTS_EXT
-  name: JAVA_OPTS_EXT
+- description: arbitrary JAVA_OPTS args. useful to override standalone.xml jndi vars or other configuration properties
+  displayName: JAVA_OPTS
+  name: JAVA_OPTS
   required: false
 - description: the project namespace
   displayName: NAMESPACE
