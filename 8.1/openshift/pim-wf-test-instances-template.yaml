@@ -70,10 +70,6 @@ objects:
             value: hummingbird
           - name: PIM_ADMIN_DB
             value: pim-admin-db-${INSTANCE_LABEL}              
-          - name: TEST_GROUP
-            value: ${TEST_GROUP}
-          - name: JAVA_OPTS
-            value: ${JAVA_OPTS}
           - name: JVM_ARGS
             value: ${JVM_ARGS}
           image: ${DOCKER_REGISTRY}/${NAMESPACE}/wf-tst-${INSTANCE_LABEL}:latest
@@ -237,14 +233,6 @@ parameters:
   displayName: TEST_THREAD
   name: TEST_THREAD
   required: true
-- description: the parallelization unit test group name
-  displayName: TEST_GROUP
-  name: TEST_GROUP
-  required: false
-- description: arbitrary JAVA_OPTS args. useful to override standalone.xml jndi vars or other configuration properties
-  displayName: JAVA_OPTS
-  name: JAVA_OPTS
-  required: false
 - description: the project namespace
   displayName: NAMESPACE
   name: NAMESPACE
