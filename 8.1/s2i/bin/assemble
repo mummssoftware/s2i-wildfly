@@ -311,7 +311,7 @@ function buildPIM(){
 	    oc logs -f bc/wf-tst-$INSTANCE_LABEL
 
 	    echo "spinning up Wildfly test servers, and their PIM root database pods.."
-      for i in 1 2 3 4 5 6
+      for i in {1..6}
       do
         if [ "$i" = "5" ]
         then
@@ -322,15 +322,9 @@ function buildPIM(){
         else
             jvmArgs="";
         fi
-        oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=$i JVM_ARGS=jvmArgs | oc create -f -
+        oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=$i JVM_ARGS=$jvmArgs | oc create -f -
       done
-      #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=1 | oc create -f -
-      #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=2 | oc create -f -
-      #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=3 | oc create -f -
-	    #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=4 | oc create -f -
-      #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=5 -v JVM_ARGS="-DTEST_GROUP=transaction-isolated-tests" | oc create -f -
-      #oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=6 -v JVM_ARGS="-DTEST_GROUP=transaction-isolated-parallel-tests" | oc create -f -
-
+      
 	    #sleeping here to make sure that wf and pim-root-db pods start up
 	    #TO-DO: this should be replace via health checks in Openshift
 	    sleep 30;
