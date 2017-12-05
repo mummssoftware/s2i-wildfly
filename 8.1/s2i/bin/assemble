@@ -322,7 +322,7 @@ function buildPIM(){
         else
             jvmArgs="";
         fi
-        oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=$i JVM_ARGS=$jvmArgs | oc create -f -
+        oc process -f /opt/hummingbird/pim-wf-test-instances-template.yaml -v INSTANCE_LABEL=$INSTANCE_LABEL -v TEST_THREAD=$i | oc create -f -
       done
       
 	    #sleeping here to make sure that wf and pim-root-db pods start up
