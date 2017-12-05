@@ -7,7 +7,7 @@ LOCAL_SOURCE_DIR=${HOME}
 
 if [ "$IS_UNIT_TESTER" = "true" ]; then
     LOCAL_IP=`hostname -I`
-    cat  $LOCAL_SOURCE_DIR/wildfly/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g  > /wildfly/standalone/configuration/standalone-s2i.xml
+    cat  $LOCAL_SOURCE_DIR/wildfly/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone-s2i.xml
     exec /wildfly/bin/standalone.sh  --server-config=standalone-s2i.xml $JVM_ARGS -DLDAP_HOST=$LDAP_HOST -DPIM_ADMIN_DB=$PIM_ADMIN_DB -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB_NAME=$PIM_REF_DB_NAME -DPIM_REF_DB_USER=$PIM_REF_DB_USER -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD -DPIM_REF_DB_PASSWORD=$PIM_REF_DB_PASSWORD -DEMBED_APACHEDS_LDAP=true -DENABLE_REDIS_SESSION=false -DLOCAL_IP=$LOCAL_IP
 else
 #this while loop means that deployment will stall (because the health check will fail unit HBEE starts up)
