@@ -3,11 +3,12 @@
 # It is extends the Wildfly 13.0.0 Final s2i image replacing maven with ant
 # and adding the require postgres driver
 
-FROM openshift/wildfly:13
+FROM openshift/wildfly-130-centos7:latest
 
 MAINTAINER Brad Durrow <brad@nolab.org>
 
 EXPOSE 8080 9990
+USER 0
 
 # Install ant, I believe this includes ivy
 RUN INSTALL_PKGS="ant" && \
@@ -17,7 +18,8 @@ RUN INSTALL_PKGS="ant" && \
 
 #We need to replace the assemble script with one that works with Ivy
 #and prepare /opt/hummingbird for artifacts from the build
-RUN patch assemble.patch $STI_SCRIPTS_PATH/assemble && \
+COPY assemble.patch /tmp/
+RUN patch $STI_SCRIPTS_PATH/assemble /tmp/assemble.patch && \
     mkdir -p /opt/hummingbird/data/ && \
     chown -R 1001:0 /opt/hummingbird/data/ && \
     chmod -R ug+rwX /opt/hummingbird/data
