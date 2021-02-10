@@ -15,7 +15,10 @@ LABEL io.k8s.description="Platform for building and running JEE applications on 
       io.k8s.display-name="WildFly 8.1" \
       io.openshift.expose-services="8080:http" \
       io.openshift.tags="builder,wildfly,wildfly81" \
-      io.openshift.s2i.destination="/opt/s2i/destination"
+      io.openshift.s2i.assemble-input-files="/wildfly/standalone/deployments;/wildfly/standalone/configuration;/wildfly/provided_modules" \
+      io.openshift.s2i.destination="/opt/s2i/destination" \
+      com.redhat.deployments-dir="/wildfly/standalone/deployments" \
+      maintainer="Ben Parees <bparees@redhat.com>"
 
 # Install Maven, Wildfly 8
 RUN INSTALL_PKGS="tar ant unzip bc which lsof java-1.8.0-openjdk java-1.8.0-openjdk-devel glibc-devel.i686 ncurses-libs.i686 libxml2-devel.i686 file emacs" && \
@@ -24,42 +27,35 @@ RUN INSTALL_PKGS="tar ant unzip bc which lsof java-1.8.0-openjdk java-1.8.0-open
     yum clean all -y && \
     (curl -v https://www.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | \
     tar -zx -C /usr/local) && \
-    ln -sf /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn
-RUN    mkdir -p /wildfly && \
-    wget -O /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz https://download.jboss.org/wildfly/$WILDFLY_VERSION_BIN/wildfly-$WILDFLY_VERSION_BIN.tar.gz 
-RUN     gunzip /tmp/wildfly-$WILDFLY_VERSION_BIN.tar.gz && \
-    tar -xvf  /tmp/wildfly-$WILDFLY_VERSION_BIN.tar -C /wildfly && \
-    rm /tmp/wildfly-$WILDFLY_VERSION_BIN.tar && \
-    mv /wildfly/wildfly-$WILDFLY_VERSION_BIN/* /wildfly/ && \
-    rm -rf /tmp/wildfly-$WILDFLY_VERSION_BIN && \
+    ln -sf /usr/local/apache-maven-$MAVEN_VERSION/bin/mvn /usr/local/bin/mvn && \
+    mkdir -p $HOME/.m2 && \
+    mkdir -p /wildfly && \
+    (curl -v https://download.jboss.org/wildfly/$WILDFLY_VERSION_BIN/wildfly-$WILDFLY_VERSION_BIN.tar.gz | tar -zx --strip-components=1 -C /wildfly) && \
     mkdir -p /opt/s2i/destination
 
 # Add s2i wildfly customizations
-#ADD ./contrib/wfmodules/ /wildfly/modules/
-#ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
-#ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
+ADD ./contrib/wfmodules/ /wildfly/modules/
+ADD ./contrib/wfbin/standalone.conf /wildfly/bin/standalone.conf
+ADD ./contrib/wfcfg/standalone.xml /wildfly/standalone/configuration/standalone.xml
+ADD ./contrib/settings.xml $HOME/.m2/
 COPY customizations/undertow-servlet-1.0.15.Final.jar /wildfly/modules/system/layers/base/io/undertow/servlet/main/
 
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
-
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
 #lets add our postgres driver
 COPY ./postgres/postgresql-9.4.1208.jre6.jar /tmp/
 RUN  /bin/sh -c "/wildfly/bin/standalone.sh &" && \
-    sleep 10 && \
-    /wildfly/bin/jboss-cli.sh --connect  --command="module add --name=org.postgres --resources=/tmp/postgresql-9.4.1208.jre6.jar --dependencies=javax.api,javax.transaction.api" && \
-    /wildfly/bin/jboss-cli.sh --connect	 --command=:shutdown && \
-    rm -rf /tmp/postgresql-9.4.1208.jre6.jar
+sleep 10 && \
+/wildfly/bin/jboss-cli.sh --connect  --command="module add --name=org.postgres --resources=/tmp/postgresql-9.4.1208.jre6.jar --dependencies=javax.api,javax.transaction.api" && \
+/wildfly/bin/jboss-cli.sh --connect	 --command=:shutdown && \
+rm -rf /tmp/postgresql-9.4.1208.jre6.jar
 
-
-
-RUN chown -R 1001:0 /wildfly  && \
-    chown -R 1001:0 $HOME/.pki && \
-    chmod -R a+rwx /wildfly && \
-    mkdir -p /opt/hummingbird/data/ && \
-    chmod -R g+rw /opt/hummingbird/data/ && \
-    chmod -R g+rw /opt/s2i/destination
+RUN mkdir -p /opt/hummingbird/data/ && \
+    chown -R 1001:0 /wildfly && chown -R 1001:0 $HOME && \
+    chmod -R ug+rwX /wildfly && \
+    chmod -R g+rw /opt/s2i/destination && \
+    chmod -R g+rw /opt/hummingbird/data/
 
 
 USER 1001
