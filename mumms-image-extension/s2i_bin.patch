@@ -1,0 +1,100 @@
+diff -ur s2i/bin/assemble ../13.0/s2i/bin/assemble
+--- s2i/bin/assemble	2021-02-12 07:11:25.000000000 -0700
++++ ../13.0/s2i/bin/assemble	2021-02-10 10:54:30.000000000 -0700
+@@ -340,64 +340,6 @@
+   move_artifacts "." war ear rar jar
+ fi
+ 
+-#TODO: Consider moving this to the top where it should be
+-function restore_saved_ivy_artifacts() {
+-  if [ -e /opt/s2i/destination/artifacts/.ivy/ ]; then
+-    echo -n "Restoring saved artifacts from prior ivy build..."
+-    mkdir -p $HOME/.ivy
+-    mv /opt/s2i/destination/artifacts/.ivy/cache $HOME/.ivy || true      
+-  fi
+-}
+-
+-####################HBEE related assembly#########################
+-restore_saved_ivy_artifacts
+-set -e
+-JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+-echo "creating $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties"
+-echo "hbrepo.dir=${LOCAL_SOURCE_DIR}/hbgwt/lib/ivy/repo/" > $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/ivysettings.properties
+-echo "creating $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated directory"
+-mkdir -p $LOCAL_SOURCE_DIR/hbgwt/HBDynaWeb/.apt_generated
+-mkdir -p /opt/hummingbird/data/hbgwt/HBEJB/
+-cp $LOCAL_SOURCE_DIR/hbgwt/HBEJB/config.properties /opt/hummingbird/data/hbgwt/HBEJB/
+-
+-cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
+-#echo "liquifying root db $PIM_ROOT_DB with user $PIM_DB_USER and password $PIM_DB_PASSWORD "
+-ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml download-ivy init-ivy
+-#ant -f $LOCAL_SOURCE_DIR/hbgwt/HBJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ liquibase-update-database -Ddatabase.name=hummingbird
+-#echo "liquifying ref db"
+-#ant -f $LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/build.xml -Ddatabase.username=$PIM_DB_USER -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBRefJPA/liquibase/changelog/ref-db.changelog-master.xml -Ddatabase.url=jdbc:postgresql://$PIM_REF_DB_HOST:5432/hummingbird_reference liquibase-update-ref-db -Ddatabase.name=hummingbird_reference
+-#cp $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml /wildfly/standalone/configuration/standalone.xml.src
+-#cat  $LOCAL_SOURCE_DIR/hbgwt/docker/wildfly/8.1/standalone.xml | sed s/"\${PIM_REF_DB_HOST}"/$PIM_REF_DB_HOST/g | sed s/"\${PIM_REF_DB_NAME}"/$PIM_REF_DB_NAME/g | sed s/"\${PIM_REF_DB_USER}"/$PIM_REF_DB_USER/g | sed s/"\${PIM_REF_DB_PASSWORD}"/$PIM_REF_DB_PASSWORD/g > /wildfly/standalone/configuration/standalone.xml
+-cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
+-ant  -Dfile.encoding=UTF8 -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DpasswordModuleRequired=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
+-
+-echo "extracting hb-data.tar"
+-mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
+-cd /opt/hummingbird/data/
+-tar xvf hb-data.tar #> /dev/null 2> /dev/null
+-rm hb-data.tar
+-echo "setting up files for running liquibase on startup"
+-mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/
+-cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBJPA/* /opt/hummingbird/data/hbgwt/HBJPA/
+-cp -Rf $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/
+-
+-#if we need to, then run the unit tests
+-if [ "$RUN_UNIT_TESTS" = "true" ] 
+-then
+-   cd $LOCAL_SOURCE_DIR/hbgwt/HBUnitTest/;
+-   unset LDAP_HOST;
+-   cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources/* /opt/hummingbird/data/hbgwt/HBEJB/resources/
+-   ant -DWILDFLY_HOME=/wildfly/ -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD  -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB_HOST=$PIM_REF_DB_HOST -DPIM_ADMIN_DB=$PIM_ADMIN_DB -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ -Ddatabase.username=hummingbird -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Duser.timezone=UTC -Dcontexts=test run-openshift-tests || exit 1;
+-   rm -rf /opt/hummingbird/data/hbgwt/HBEJB/resources
+-fi 
+-
+-move_artifacts "hbgwt/dist/" ear war
+-
+-echo "cleaning up"
+-rm -rf $LOCAL_SOURCE_DIR/*
+-rm -rf /opt/s2i/destination/src/*
+-####################HBEE related assembly#########################
+-
+ # Move built artifacts (if any!) from the target/ directory
+ # (or $ARTIFACT_DIR if specified)
+ if [ -d $LOCAL_SOURCE_DIR/$ARTIFACT_DIR ]; then
+diff -ur s2i/bin/save-artifacts ../13.0/s2i/bin/save-artifacts
+--- s2i/bin/save-artifacts	2021-02-12 07:23:38.000000000 -0700
++++ ../13.0/s2i/bin/save-artifacts	2021-02-10 10:54:30.000000000 -0700
+@@ -1,24 +1,13 @@
+-#!/bin/bash -e
+-
+-errcho() { echo "$@" 1>&2; }
++#!/bin/sh -e
+ 
+ pushd ${HOME} >/dev/null
+ 
+ # ${HOME}/.m2 is the maven repo dir
+ # {$HOME}/target is the class files from the previous build
+-ARCHIVE_DIRS=()
+-for ARCHIVE_DIR in ./target ./.m2 ./.ivy; do
+-  errcho "[INFO] Found ${ARCHIVE_DIR}, adding to list..."
+-  if [[ -d ${ARCHIVE_DIR} ]]; then
+-    ARCHIVE_DIRS+=( ${ARCHIVE_DIR} )
+-  fi
+-done
+-
+-if [[ ${#ARCHIVE_DIRS[@]} -gt 0 ]]; then
+-  errcho "[INFO] Archiving ${ARCHIVE_DIRS[@]}..."
+-  tar cf - "${ARCHIVE_DIRS[@]}"
++if [ -d ./target ]; then
++    tar cf - ./.m2 ./target
+ else
+-  errcho "[WARN] Archive list is empty, skipping archive..."
++    tar cf - ./.m2
+ fi
+ 
+ popd >/dev/null

@@ -18,8 +18,8 @@ RUN INSTALL_PKGS="ant" && \
 
 #We need to replace the assemble script with one that works with Ivy
 #and prepare /opt/hummingbird for artifacts from the build
-COPY assemble.patch /tmp/
-RUN patch $STI_SCRIPTS_PATH/assemble /tmp/assemble.patch && \
+COPY s2i_bin.patch /tmp/
+RUN patch -p1 $STI_SCRIPTS_PATH /tmp/s2i_bin.patch && \
     mkdir -p /opt/hummingbird/data/ && \
     chown -R 1001:0 /opt/hummingbird/data/ && \
     chmod -R ug+rwX /opt/hummingbird/data
