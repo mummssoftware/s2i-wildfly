@@ -1,6 +1,6 @@
-diff -ur ../13.0/s2i/bin/assemble s2i/bin/assemble
+diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 --- ../13.0/s2i/bin/assemble	2021-02-10 10:54:30.000000000 -0700
-+++ s2i/bin/assemble	2021-02-12 07:11:25.000000000 -0700
++++ s2i/bin/assemble	2021-02-12 08:08:42.000000000 -0700
 @@ -340,6 +340,64 @@
    move_artifacts "." war ear rar jar
  fi
@@ -39,7 +39,7 @@ diff -ur ../13.0/s2i/bin/assemble s2i/bin/assemble
 +echo "extracting hb-data.tar"
 +mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 +cd /opt/hummingbird/data/
-+tar xvf hb-data.tar #> /dev/null 2> /dev/null
++tar xf hb-data.tar #> /dev/null 2> /dev/null
 +rm hb-data.tar
 +echo "setting up files for running liquibase on startup"
 +mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/
@@ -66,7 +66,7 @@ diff -ur ../13.0/s2i/bin/assemble s2i/bin/assemble
  # Move built artifacts (if any!) from the target/ directory
  # (or $ARTIFACT_DIR if specified)
  if [ -d $LOCAL_SOURCE_DIR/$ARTIFACT_DIR ]; then
-diff -ur ../13.0/s2i/bin/save-artifacts s2i/bin/save-artifacts
+diff -urN ../13.0/s2i/bin/save-artifacts s2i/bin/save-artifacts
 --- ../13.0/s2i/bin/save-artifacts	2021-02-10 10:54:30.000000000 -0700
 +++ s2i/bin/save-artifacts	2021-02-12 07:23:38.000000000 -0700
 @@ -1,13 +1,24 @@
