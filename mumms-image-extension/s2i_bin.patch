@@ -1,7 +1,7 @@
 diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 --- ../13.0/s2i/bin/assemble	2021-02-10 10:54:30.000000000 -0700
-+++ s2i/bin/assemble	2021-02-12 10:51:42.000000000 -0700
-@@ -340,6 +340,64 @@
++++ s2i/bin/assemble	2021-02-12 11:28:34.000000000 -0700
+@@ -340,6 +340,72 @@
    move_artifacts "." war ear rar jar
  fi
  
@@ -36,26 +36,34 @@ diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 +cd $LOCAL_SOURCE_DIR/hbgwt/HBEE/
 +ant  -Dfile.encoding=UTF8 -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DpasswordModuleRequired=$SKIP_GWT_COMPILE   -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR  build 
 +
-+echo "extracting hb-data.tar"
++echo "Preparing to extract hb-data.tar..."
 +mv $LOCAL_SOURCE_DIR/hbgwt/dist/hb-data.tar /opt/hummingbird/data/
 +cd /opt/hummingbird/data/
++echo "extracting hb-data.tar..."
 +tar xf hb-data.tar #> /dev/null 2> /dev/null
++echo "Removing hb-data.tar..."
 +rm hb-data.tar
-+echo "setting up files for running liquibase on startup"
++echo "Sleeping for 30 seconds..."
++sleep 30
++echo "setting up files for running liquibase on startup..."
 +mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/ || echo "Failed mkdir..."
 +cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBJPA/* /opt/hummingbird/data/hbgwt/HBJPA/ || echo "HBJPA liquibase setup failed..."
 +cp -Rf $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/ || echo "ivy liquibase setup failed..."
++echo "finished with liquibase on startup setup..."
 +
 +#if we need to, then run the unit tests
 +if [ "$RUN_UNIT_TESTS" = "true" ] 
 +then
++   echo "Preparing to run Unit Tests..."
 +   cd $LOCAL_SOURCE_DIR/hbgwt/HBUnitTest/;
 +   unset LDAP_HOST;
 +   cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBEJB/resources/* /opt/hummingbird/data/hbgwt/HBEJB/resources/
++   echo "Running Unit Tests..."
 +   ant -DWILDFLY_HOME=/wildfly/ -DHB_HOME=$LOCAL_SOURCE_DIR -DSKIP_GWT_COMPILE=$SKIP_GWT_COMPILE -DPIM_DB_USER=$PIM_DB_USER -DPIM_DB_PASSWORD=$PIM_DB_PASSWORD  -DHB_UNITTEST_DIR=$LOCAL_SOURCE_DIR/hbgwt/HBEJB/ -DGIT_HOME=$LOCAL_SOURCE_DIR -DPIM_ROOT_DB=$PIM_ROOT_DB -DPIM_REF_DB_HOST=$PIM_REF_DB_HOST -DPIM_ADMIN_DB=$PIM_ADMIN_DB -Ddatabase.url=jdbc:postgresql://$PIM_ROOT_DB:5432/ -Ddatabase.username=hummingbird -Ddatabase.password=$PIM_DB_PASSWORD -Ddb.changelog.file=$LOCAL_SOURCE_DIR/hbgwt/HBJPA/liquibase/changelog/db.changelog-master.xml -Duser.timezone=UTC -Dcontexts=test run-openshift-tests || exit 1;
 +   rm -rf /opt/hummingbird/data/hbgwt/HBEJB/resources
 +fi 
 +
++echo 'Calling move_artifacts "hbgwt/dist/" ear war...'
 +move_artifacts "hbgwt/dist/" ear war
 +
 +echo "cleaning up"
