@@ -1,6 +1,6 @@
 diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 --- ../13.0/s2i/bin/assemble	2021-02-10 10:54:30.000000000 -0700
-+++ s2i/bin/assemble	2021-02-12 08:08:42.000000000 -0700
++++ s2i/bin/assemble	2021-02-12 08:55:26.000000000 -0700
 @@ -340,6 +340,64 @@
    move_artifacts "." war ear rar jar
  fi
@@ -43,8 +43,8 @@ diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 +rm hb-data.tar
 +echo "setting up files for running liquibase on startup"
 +mkdir -p /opt/hummingbird/data/hbgwt/HBJPA/ /opt/hummingbird/data/hbgwt/lib/ivy/
-+cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBJPA/* /opt/hummingbird/data/hbgwt/HBJPA/
-+cp -Rf $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/
++cp -Rf $LOCAL_SOURCE_DIR/hbgwt/HBJPA/* /opt/hummingbird/data/hbgwt/HBJPA/ || echo "HBJPA liquibase setup failed..."
++cp -Rf $LOCAL_SOURCE_DIR/hbgwt/lib/ivy/* /opt/hummingbird/data/hbgwt/lib/ivy/ || echo "ivy liquibase setup failed..."
 +
 +#if we need to, then run the unit tests
 +if [ "$RUN_UNIT_TESTS" = "true" ] 
