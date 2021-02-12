@@ -1,7 +1,7 @@
 diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 --- ../13.0/s2i/bin/assemble	2021-02-10 10:54:30.000000000 -0700
-+++ s2i/bin/assemble	2021-02-12 11:28:34.000000000 -0700
-@@ -340,6 +340,72 @@
++++ s2i/bin/assemble	2021-02-12 12:10:56.000000000 -0700
+@@ -340,6 +340,74 @@
    move_artifacts "." war ear rar jar
  fi
  
@@ -63,6 +63,8 @@ diff -urN ../13.0/s2i/bin/assemble s2i/bin/assemble
 +   rm -rf /opt/hummingbird/data/hbgwt/HBEJB/resources
 +fi 
 +
++#move_artifacts isn't set -e safe, I think it is one of the shifts
++set +e
 +echo 'Calling move_artifacts "hbgwt/dist/" ear war...'
 +move_artifacts "hbgwt/dist/" ear war
 +
